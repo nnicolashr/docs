@@ -1,21 +1,21 @@
-Simple Authentication and Authorization Application
-###################################################
+Simple aplicación de Autenticación y Autorización
+#################################################
 
 .. note::
     Esta página todavía no ha sido traducida y pertenece a la documentación de
     CakePHP 2.X. Si te animas puedes ayudarnos `traduciendo la documentación
     desde Github <https://github.com/cakephp/docs>`_.
 
-Following our :doc:`/tutorials-and-examples/blog/blog` example, imagine we wanted to
-secure access to certain URLs, based on the logged-in
-user. We also have another requirement: to allow our blog to have multiple authors
-who can create, edit, and delete their own articles while
-disallowing other authors to make any changes to articles they do not own.
+Siguiendo nuestro ejemplo :doc:`/tutorials-and-examples/blog/blog`, imaginemos que queremos asegurar
+el acceso a ciertas URLs, basado en el inicio de sesión. También tenemos otro requisito: permitir que
+nuestro blog tenga múltiples autores que pueden crear, editar y eliminar sus propios artículos, pero además
+no permitir que otros autores puedan realizar cambios en artículos que no les pertenecen.
 
-Creating All User-Related Code
-==============================
+Creando el código de todos los Usuarios-Relacionados
+====================================================
 
-First, let's create a new table in our blog database to hold our users' data::
+En primer lugar, vamos a crear una nueva tabla en nuestra base de datos blog para mantener los datos de
+nuestros usuarios::
 
     CREATE TABLE users (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -26,13 +26,13 @@ First, let's create a new table in our blog database to hold our users' data::
         modified DATETIME DEFAULT NULL
     );
 
-We have adhered to the CakePHP conventions in naming tables, but we're also
-taking advantage of another convention: By using the username and password
-columns in a users table, CakePHP will be able to auto-configure most things for
-us when implementing the user login.
+Nos hemos adherido a las convenciones de CakePHP en el uso de los nombres de las tablas, pero además estamos
+aprovechando otra convención: Al utilizar las columnas de nombre de usuario y contraseña de la tabla de usuarios,
+CakePHP podrá configurar automáticamente la mayoría de las funcionalidades asociadas en la aplicación de la
+conexión del usuario.
 
-Next step is to create our Users table, responsible for finding, saving and
-validating any user data::
+El siguiente paso es crear nuestra tabla Usuarios, responsable de buscar, grabar y
+validar los datos de usuario::
 
     // src/Model/Table/UsersTable.php
     namespace App\Model\Table;
@@ -57,9 +57,9 @@ validating any user data::
 
     }
 
-Let's also create our UsersController. The following content corresponds to
-parts of a basic baked UsersController class using the code generation utilities bundled
-with CakePHP::
+También vamos a crear nuestro UsersController. El siguiente contenido corresponde a
+partes de una clase básica UsersController usando la utilidad de generación de código Bake
+que viene con CakePHP::
 
     // src/Controller/UsersController.php
 
@@ -108,9 +108,9 @@ with CakePHP::
 
     }
 
-In the same way we created the views for our articles or by using the code
-generation tool, we can implement the user views. For the purpose of this
-tutorial, we will show just the add.ctp:
+De la misma manera que hemos creado la vista de nuestros artículos o utilizando la generación de código,
+podemos implementar las vistas de los usuarios. Para el propósito de este
+tutorial, vamos a mostrar sólo la add.ctp:
 
 .. code-block:: php
 
@@ -129,16 +129,16 @@ tutorial, we will show just the add.ctp:
     <?= $this->Form->end() ?>
     </div>
 
-Authentication (Login and Logout)
+Autenticación (Login y Logout)
 =================================
 
-We're now ready to add our authentication layer. In CakePHP this is handled by
-the :php:class:`Cake\\Controller\\Component\\AuthComponent`, a class responsible
-for requiring login for certain actions, handling user login and logout, and
-also authorizing logged-in users to the actions they are allowed to reach.
+Ahora estamos listos para añadir a nuestra capa de autenticación. En CakePHP esto es manejado por
+el :php:class:`Cake\\Controller\\Component\\AuthComponent`, una clase responsable
+para exigir login a ciertas acciones, la manipulación de login y logout, y
+también autoriza el inicio de sesión a los usuarios para las acciones que se les ha permitido.
 
-To add this component to your application open your ``src/Controller/AppController.php``
-file and add the following lines::
+Para añadir este componente a su aplicación abra su archivo ``src/Controller/AppController.php``
+y añada las siguientes líneas::
 
     // src/Controller/AppController.php
 
@@ -173,19 +173,19 @@ file and add the following lines::
         //...
     }
 
-There is not much to configure, as we used the conventions for the users table.
-We just set up the URLs that will be loaded after the login and logout actions is
-performed, in our case to ``/articles/`` and ``/`` respectively.
+No hay mucho de configurar, ya que utilizamos las convenciones de la tabla users.
+Establecimos las direcciones URL que se cargarán después de realizadas las acciones de login y logout,
+en nuestro caso ``/articles/`` and ``/`` respectivamente.
 
-What we did in the ``beforeFilter`` function was to tell the AuthComponent to not
-require a login for all ``index`` and ``view`` actions, in every controller. We want
-our visitors to be able to read and list the entries without registering in the
-site.
+Lo que hicimos en la función ``beforeFilter`` fue contar qie el AuthComponent no
+requiera un login para todas las acciones ``index`` and ``view``, en cada controlador. Queremos
+que nuestros visitantes sean capaces de leer y listar las entradas sin registrarse en el
+sitio.
 
-Now, we need to be able to register new users, save their username and password,
-and more importantly, hash their password so it is not stored as plain text in
-our database. Let's tell the AuthComponent to let un-authenticated users access
-the users add function and implement the login and logout action::
+Ahora, tenemos que ser capaces de registrar nuevos usuarios, guardar su nombre de usuario y contraseña,
+y lo más importante, el hash de su contraseña para que no se almacene como texto sin formato en
+nuestra base de datos. Digamos que el AuthComponent dejará el acceso a los usuarios no-autenticados a
+los usuarios que agregan función e implementar la acción de login y logout::
 
     // src/Controller/UsersController.php
 
@@ -215,9 +215,9 @@ the users add function and implement the login and logout action::
         return $this->redirect($this->Auth->logout());
     }
 
-Password hashing is not done yet, we need an Entity class for our User in order
-to handle its own specific logic. Create the ``src/Model/Entity/User.php`` entity file
-and add the following::
+El Hash de contraseñas no está hecho todavía, necesitamos una clase Entity para nuestro usuario con el fin
+manejar su propia lógica específica. Crea el archivo entidad ``src/Model/Entity/User.php``
+y añada lo siguiente::
 
     // src/Model/Entity/User.php
     namespace App\Model\Entity;
